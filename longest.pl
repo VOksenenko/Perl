@@ -11,20 +11,20 @@ open (my $text, "<", $input) or die "Can't open text file!";
 my $max = 0;
 my $longest = '';
 
-#Выполнять пока есть строки в  $text
+#Do while there are lines in  $text
 while(my $line = <$text>){
-    #Разбиваем строку на массив слов по пробелу.
+    #Splitting a string into an array of words by space.
     my @words = (split (' ',$line));
     
-    #Проходимся циклом по каждому слову
+    #Loop through each word
     for my $i(@words){
     
-        #Если длина текущего слова больше текущего $max, присваеваем $max новое значение и записываем слово в переменную $longest 
+        #If the current word is longer than the current $max value, assign $max to new value and write word to the $longest 
         if(length($i) > $max){
             $max = length($i);
             $longest = $i;
         }
     }
 }
- #Печатаем результат.
+ #Prints result
 print ($longest . " - " . $max . "\n");
