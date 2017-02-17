@@ -3,8 +3,9 @@ use strict;
 
 open (my $text, "<", "words") or die "Can't open text file!";
 
-while(my $line = <$text>){
+#while(
+    my $line = <$text>;
     print "$line";
-}
+#}
 
 
