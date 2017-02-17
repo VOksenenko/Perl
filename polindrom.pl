@@ -5,8 +5,13 @@ use strict;
 
 #while(<>){
     my $line = <STDIN>;
-    my $line2 = reverse ($line);
-    print ("$line2\n");
+    chomp $line;
+    if ( $line eq reverse ($line)){
+        print ("Polindrom!\n");
+    }
+    else {
+        print "No!\n";
+    }
 
 
 
