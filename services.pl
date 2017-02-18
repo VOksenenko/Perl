@@ -14,10 +14,13 @@ use strict;
 
 open (my $services, "<", "services") or die "Can't open file!";
 
-#print while (<$services>) ;
-my $line = <$services>;
-chomp $line;
+while (my $line = <$services>) {
+#my $line = <$services>;
+    chomp $line;
 
-if ( (substr($line, 0,1)) eq "#" ){
-    print "Comment\n";
+    if ( (substr($line, 0,1)) eq "#" ){
+        next;
+    } else {
+        print "$line\n";
+    }
 }
