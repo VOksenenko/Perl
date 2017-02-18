@@ -20,24 +20,26 @@ my $P2;
 if ( scalar(@ARGV) > 0 and  scalar(@ARGV) < 3){
     $P1 = $ARGV[0]; 
     $P2 = $ARGV[1] if ( scalar(@ARGV) == 2 );
+    
+    while (my $line = <$file>) {
+        chomp $line;
+
+            if ( (substr($line, 0,1)) eq "#" or $line eq ""){
+                next;
+            } else {
+                my @col = split(' ', $line);
+                my $port = ( split('/', $col[1] ) )[0];
+                $services{$port} = $col[0] if defined $col[0];
+            }
+    }
+    
+    if ($P2){
+        print "$P1 - $services{$P1}\n";
+        print "$P2 - $services{$P2}\n";
+    } else {
+        print "$P1 - $services{$P1}\n";
+    }
+    
 } else {
     print "\nUsage: ./services.pl port [port2]\n\n";
 }
-
-while (my $line = <$file>) {
-#my $line = <$services>;
-    chomp $line;
-
-    if ( (substr($line, 0,1)) eq "#" or $line eq ""){
-        next;
-    } else {
-       my @col = split(' ', $line);
-       my $port = ( split('/', $col[1] ) )[0];
-       $services{$port} = $col[0] if defined $col[0];
-       #print "$port\n";
-    }
-}
-
-print "$P1 - $services{$P1}\n" if defined $P1;
-print "$P2 - $services{$P2}\n" if defined $P2;
-
