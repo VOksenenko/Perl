@@ -12,9 +12,10 @@ use strict;
 #
 #The program has to process exceptions like blank lines or comments in the file and handle an incorrect input from a user.
 
-open (my $services, "<", "services") or die "Can't open file!";
+open (my $file, "<", "services") or die "Can't open file!";
+my %services;
 
-while (my $line = <$services>) {
+while (my $line = <$file>) {
 #my $line = <$services>;
     chomp $line;
 
@@ -23,6 +24,11 @@ while (my $line = <$services>) {
     } else {
        my @col = split(' ', $line);
        my $port = ( split('/', $col[1] ))[0];
-       print "$port\n";
+       $services{$port} = $col[0] if defined $col[0];
+       #print "$port\n";
     }
 }
+
+print "$_  - $services{$_}\n" for(sort {$a <=> $b} keys %services);
+
+
