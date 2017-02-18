@@ -21,6 +21,8 @@ while (my $line = <$services>) {
     if ( (substr($line, 0,1)) eq "#" ){
         next;
     } else {
-        print "$line\n";
+       my @col = split(' ', $line);
+       my $port = ( split('/', $col[1] ))[0];
+       print "$port\n";
     }
 }
