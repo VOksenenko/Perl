@@ -15,9 +15,11 @@ use strict;
 open (my $file, "<", "services") or die "Can't open file!";
 my %services;
 my $P1;
+my $P2;
 
-if ($ARGV[0]){
+if ( scalar(@ARGV) > 0 and  scalar(@ARGV) < 3){
     $P1 = $ARGV[0]; 
+    $P2 = $ARGV[1] if ( scalar(@ARGV) == 2 );
 } else {
     print "\nUsage: ./services.pl port [port2]\n\n";
 }
@@ -37,5 +39,5 @@ while (my $line = <$file>) {
 }
 
 print "$P1 - $services{$P1}\n" if defined $P1;
-
+print "$P2 - $services{$P2}\n" if defined $P2;
 
