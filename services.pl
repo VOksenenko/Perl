@@ -28,16 +28,29 @@ if ( scalar(@ARGV) > 0 and  scalar(@ARGV) < 3){
                 next;
             } else {
                 my @col = split(' ', $line);
-                my $port = ( split('/', $col[1] ) )[0];
-                $services{$port} = $col[0] if defined $col[0];
+                my $port = ( split('/', $col[1] ) )[0] if defined $col[1];
+                $services{$port} = $col[0];
             }
     }
     
     if ($P2){
-        print "$P1 - $services{$P1}\n";
-        print "$P2 - $services{$P2}\n";
+        my $counter = $P1; 
+         while ( $counter <= $P2){
+            if($services{$counter}){
+                print "$counter - $services{$counter}\n";
+                $counter++;
+            } else {
+                print "$counter - no assigned service\n";
+                $counter++;
+            }         
+            
+         }     
     } else {
-        print "$P1 - $services{$P1}\n";
+        if ($services{$P1}){
+            print "$P1 - $services{$P1}\n";
+        } else {
+            print "$P1 - no assigned service\n";
+        }
     }
     
 } else {
