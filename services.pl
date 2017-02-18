@@ -14,21 +14,28 @@ use strict;
 
 open (my $file, "<", "services") or die "Can't open file!";
 my %services;
+my $P1;
+
+if ($ARGV[0]){
+    $P1 = $ARGV[0]; 
+} else {
+    print "\nUsage: ./services.pl port [port2]\n\n";
+}
 
 while (my $line = <$file>) {
 #my $line = <$services>;
     chomp $line;
 
-    if ( (substr($line, 0,1)) eq "#" ){
+    if ( (substr($line, 0,1)) eq "#" or $line eq ""){
         next;
     } else {
        my @col = split(' ', $line);
-       my $port = ( split('/', $col[1] ))[0];
+       my $port = ( split('/', $col[1] ) )[0];
        $services{$port} = $col[0] if defined $col[0];
        #print "$port\n";
     }
 }
 
-print "$_  - $services{$_}\n" for(sort {$a <=> $b} keys %services);
+print "$P1 - $services{$P1}\n" if defined $P1;
 
 
