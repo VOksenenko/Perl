@@ -13,5 +13,10 @@ die "$message" if ( ($port1 + 0) ne $port1);
 die "$message" if ( $port2 and ($port2 + 0) ne $port2 );
 use warnings;
 
+if ($port2){
+    ($port1, $port2) = sort {$a <=> $b} @ARGV ;
+    print "$port1, $port2\n";
+} else {
+    print "$port1\n";
+}
 
-#my ($port1, $port2) = sort {$a <=> $b} @ARGV;
