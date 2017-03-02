@@ -11,10 +11,10 @@ use strict;
 # You are free to choose your own names of that functions.
 
 sub read_hosts {
-    my @hosts = @_;
-    print "$_\n" for @hosts;
+    open(my $fh, '<', shift @_) ;
+    while (my $line = <$fh>) {
+    print $line;
+    }
 }
 
-&read_hosts("google.com", "yahoo.com");
-
-
+&read_hosts($ARGV[0]);
