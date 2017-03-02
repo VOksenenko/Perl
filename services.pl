@@ -30,6 +30,16 @@ while (my $line = <$file>) {
         my @col = split(' ', $line);
         my $port = ( split('/', $col[1] ) )[0] ;
         push(@{$services{$port}}, $col[0]);
+        
+        # Кастыль для удаления дубликатов из массива со службами.
+        for(my $i=0, my $n = scalar(@{$services{$port}})-1; $i < $n ; $i++){
+            for (my $j=$i+1, my $m = scalar(@{$services{$port}});  $j < $m; $j++ ){
+                if(@{$services{$port}}[$i] eq @{$services{$port}}[$j]){
+                delete @{$services{$port}}[$j];
+                }
+            }
+        }
+        
     }
 }
 
