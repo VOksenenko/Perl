@@ -11,10 +11,13 @@ use strict;
 # You are free to choose your own names of that functions.
 
 sub read_hosts {
+    my @hosts;
     open(my $fh, '<', shift @_) ;
     while (my $line = <$fh>) {
-    print $line;
+        chomp $line;
+        push @hosts, $line;
     }
+    return print "@hosts\n";
 }
 
 &read_hosts($ARGV[0]);
