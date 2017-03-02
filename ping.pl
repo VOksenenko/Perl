@@ -28,7 +28,7 @@ while (my $line = <$fh>) {
     # Собираем из значений нужную для вывода строку.
     my $response = (split(' ', $cmd[0]))[1] . " " .
                    (split(' ', $cmd[0]))[2] . ": " .
-                "max_time = " . (split('/', $cmd[-1]))[5] . " ms; " .
+                   "max_time = " . (split('/', $cmd[-1]))[5] . " ms; " .
                    (split(' ', $cmd[-2]))[5] . " of loss;";
                    
     # Добавляем в массив  @response каждую собранную выше строку.              
