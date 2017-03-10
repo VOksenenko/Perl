@@ -9,6 +9,12 @@ use strict;
 # c) "print_res", that prints the result to STDOUT with a timestamp. If an optional parameter "output_file" is passing, the output should be printed to both STDOUT and the target file. Arguments of this function may differ depending on realization, so to find out what they should be is on your own.
 #
 # You are free to choose your own names of that functions.
+
+my $usage = "\nUsage: ./check.pl  input_file  count  [output_file]\n\n";
+die "$usage" if (@ARGV < 2 or @ARGV > 3);
+
+my $count = $ARGV[1];
+
 sub read_hosts {
     my @hosts;
     open(my $fh, '<', shift @_) ;
@@ -17,7 +23,6 @@ sub read_hosts {
         next if ($line eq "");
         push @hosts, $line;
     }
-    
     return @hosts;
 }
 
@@ -27,43 +32,50 @@ sub check {
     my @cmd = `/usr/bin/ping -c$count -i 0.2 $host 2>&1`;
     #print "@cmd\n";
     no warnings;
-    my @result;
+    my $result;
     if ( (split(':', $cmd[0]))[0] eq "ping" ) { 
-         my $domain = (split(': ', $cmd[0]))[1];    
-         @result = ("$domain"); 
-         return @result;  
-    } 
-    my $IP = (split(' ', $cmd[0]))[2] ;
-    my $domain = (split(' ', $cmd[0]))[1] ;
-    my $loss = (split(' ', $cmd[-2]))[5] ;
-    my $max = (split('/', $cmd[-1]))[5] ;
-    @result = ("$domain", "$IP", "$loss", "$max");    
-    
-    use warnings;    
-    return @result; 
-    
+         $result = (split(' ', $cmd[0]))[1] . " Name or service not known;";  
+           
+    } elsif ( (split('/', $cmd[-1]))[5] == undef ) {
+         $result = (split(' ', $cmd[0]))[1] . " " .
+                   (split(' ', $cmd[0]))[2] . ": " .
+                   (split(' ', $cmd[-2]))[5] . " of loss;"; 
+        
+    } else {
+        $result = (split(' ', $cmd[0]))[1] . " " .
+                   (split(' ', $cmd[0]))[2] . ": " .
+                   "max_time = " . (split('/', $cmd[-1]))[5] . " ms; " .
+                   (split(' ', $cmd[-2]))[5] . " of loss;";       
+    }
+    return $result;
+    use warnings;     
 }
-
-my @hosts = (read_hosts(@ARGV));
-print "@hosts\n";
-
-my @result = (check ($hosts[2], 1));
-print "$_\n" for @result;
 
 sub print_res {
-    if (scalar @_ == 1) {
-        my $domain = shift;
-        print "$domain\n";        
-    } elsif (scalar @_ == 3) {
-        my ($domain, $IP, $loss) = @_ ;
-        print "$domain, $IP, $loss\n";
-    } else {
-        my ($domain, $IP, $loss, $max) = @_ ;
-        print "$domain $IP $loss $max\n";
-    }
+    # Если файл для вывода не задан, выводим дату и все что в массиве с результатами.
+    my $date = `date`;
+    chomp $date;
+    print "   >>>>>> $date <<<<<<\n"; 
+    print "$_\n"  for (@_); 
         
+    # Если аргументов три, выводим дату и массив @response, а также открываем файл для записи и пишем дату и содержимое @response.
+    if ( @ARGV == 3 ) {
+        my $output =  $ARGV[2];  
+        open(my $out, '>>', $output) or die "Can't write to a file.";
+        print $out ">>>>>> $date <<<<<<\n";
+        print $out "$_\n"  for (@_); 
+        print $out "\n";
+    }
 }
 
-print_res(@result);
 
+my @hosts = (read_hosts(@ARGV));
+#print "@hosts\n";
 
+my @results;
+for (my $i = 0, my $n = @hosts; $i < $n ; $i++) {
+    my $result =  check ($hosts[$i], $count );
+    push @results, $result;
+}
+
+print_res(@results);
