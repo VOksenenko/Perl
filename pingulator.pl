@@ -10,21 +10,25 @@ use strict;
 #
 # You are free to choose your own names of that functions.
 
+# Выводим сообщение с подсказкой по вводу команды, если указано меньше двух или более трех аргументов
 my $usage = "\nUsage: ./check.pl  input_file  count  [output_file]\n\n";
 die "$usage" if (@ARGV < 2 or @ARGV > 3);
 
 my $count = $ARGV[1];
 
+# Функция принимает путь к файлу с адресами и возвращает массив с перечнем хостов.
 sub read_hosts {
     my @hosts;
     open(my $fh, '<', shift @_) ;
     while (my $line = <$fh>) {
         chomp $line;
+        # Если в файле есть пустые строки, пропускаем их.
         next if ($line eq "");
         push @hosts, $line;
     }
     return @hosts;
 }
+
 
 sub check {
     my ($host, $count) = @_;
@@ -33,23 +37,42 @@ sub check {
     #print "@cmd\n";
     no warnings;
     my $result;
+    
+    # Если адреса нету
     if ( (split(':', $cmd[0]))[0] eq "ping" ) { 
          $result = (split(' ', $cmd[0]))[1] . " Name or service not known;";  
-           
+     
+    # Если 100% потерь      
     } elsif ( (split('/', $cmd[-1]))[5] == undef ) {
+        # Если пингуем по IP и домена нету:
+        if ( (split (" ", $cmd[0]))[1] eq substr ((split (" ", $cmd[0]))[2], 1, -1) ) {
+            $result = (split(' ', $cmd[0]))[1] . " " .          
+                      (split(' ', $cmd[-2]))[5] . " of loss;";
+        # Если есть домен.              
+        } else {
          $result = (split(' ', $cmd[0]))[1] . " " .
                    (split(' ', $cmd[0]))[2] . ": " .
                    (split(' ', $cmd[-2]))[5] . " of loss;"; 
-        
+        }
+    # Если с пингами все ОК.   
     } else {
-        $result = (split(' ', $cmd[0]))[1] . " " .
-                   (split(' ', $cmd[0]))[2] . ": " .
-                   "max_time = " . (split('/', $cmd[-1]))[5] . " ms; " .
-                   (split(' ', $cmd[-2]))[5] . " of loss;";       
+        # Если пингуем по IP и домена нету:
+        if ( (split (" ", $cmd[0]))[1] eq substr ((split (" ", $cmd[0]))[2], 1, -1) ) {
+            $result = (split(' ', $cmd[0]))[1] . ": " .  
+                      "max_time = " . (split('/', $cmd[-1]))[5] . " ms; " .
+                      (split(' ', $cmd[-2]))[5] . " of loss;";
+        # Если есть домен.              
+        } else {
+            $result = (split(' ', $cmd[0]))[1] . " " .
+                      (split(' ', $cmd[0]))[2] . ": " .
+                      "max_time = " . (split('/', $cmd[-1]))[5] . " ms; " .
+                      (split(' ', $cmd[-2]))[5] . " of loss;";       
+        }
     }
     return $result;
     use warnings;     
 }
+
 
 sub print_res {
     # Если файл для вывода не задан, выводим дату и все что в массиве с результатами.
@@ -58,8 +81,8 @@ sub print_res {
     print "   >>>>>> $date <<<<<<\n"; 
     print "$_\n"  for (@_); 
         
-    # Если аргументов три, выводим дату и массив @response, а также открываем файл для записи и пишем дату и содержимое @response.
-    if ( @ARGV == 3 ) {
+    # Если указан файл для вывода, печатаем в файл.
+    if ( $ARGV[2] ) {
         my $output =  $ARGV[2];  
         open(my $out, '>>', $output) or die "Can't write to a file.";
         print $out ">>>>>> $date <<<<<<\n";
@@ -72,10 +95,12 @@ sub print_res {
 my @hosts = (read_hosts(@ARGV));
 #print "@hosts\n";
 
+# Собираем все результаты в один массив.
 my @results;
 for (my $i = 0, my $n = @hosts; $i < $n ; $i++) {
     my $result =  check ($hosts[$i], $count );
     push @results, $result;
 }
 
+# Печатаем все результаты
 print_res(@results);
