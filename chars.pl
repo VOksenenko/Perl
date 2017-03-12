@@ -12,7 +12,7 @@ while (<>) {
 
 @sorted = sort ({$symbols{$b} <=> $symbols{$a}} (keys %symbols));
 
-if ($sorted[0] eq "\n"){
+if ($sorted[0] eq "\n") {
     print '\n' . " -> " . $symbols{"$sorted[0]"} . "\n" ;
 }
 else {
@@ -20,7 +20,7 @@ else {
 }
 
 
-if ($sorted[-1] eq "\n"){
+if ($sorted[-1] eq "\n") {
     print '\n' . " -> " . $symbols{"$sorted[-1]"} . "\n" ;
 }
 else {
