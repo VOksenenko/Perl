@@ -16,18 +16,21 @@ sub gen {
     my $matrix;
     #my @numbers;
 
-    for my $i (0..$X) {	
-        for my $j (0..$Y) {
+    for my $i (0..$X-1) {	
+        for my $j (0..$Y-1) {
             $matrix -> [$i][$j]= rand($P) ;
         }
     }
-    
+        
+    #print (@$matrix - 1, "\n");
     return $matrix;
-    #print (@{@{$matrix }[0]}, "\n");
+    print "\n";
 }
 
 sub min_max_avg {
     my $matrix = shift;
+    my $X = @$matrix;               # Высота матрицы
+    my $Y = @{@$matrix[0]};         # Ширина матрицы
     my $max = $matrix -> [0][0];  
     my $min = $matrix -> [0][0]; 
     my $sum;
@@ -35,33 +38,29 @@ sub min_max_avg {
     my $avg;
     my $result; 
     
-    for my $i (0..3) {	
-        for my $j (0..3) {
+    for my $i (0..$X-1) {	
+        for my $j (0..$Y-1) {
             $max = $matrix -> [$i][$j] if ($matrix -> [$i][$j] > $max);            
         }
     } 
     
-    for my $i (0..3) {	
-        for my $j (0..3) {
+    for my $i (0..$X-1) {	
+        for my $j (0..$Y-1) {
             $min = $matrix -> [$i][$j] if ($matrix -> [$i][$j] < $min);            
         }
     } 
     
-    for my $i (0..3) {	
-        for my $j (0..3) {
+    for my $i (0..$X-1) {	
+        for my $j (0..$Y-1) {
             $sum += $matrix -> [$i][$j];
             ++ $count;             
         }
     }
     
-    #print "$min\n";    
-    #print "$max\n";    
-    #print "$sum\n"; 
-    #print "$count\n"; 
     $avg = $sum / $count;
     #print $avg . "\n";
     
-    $result = $min . ", " . $max . ", " . $avg;
+    $result = $min ." ". $max ." ". $avg;
     return $result;      
     #print "$result\n";      
 }
@@ -69,21 +68,34 @@ sub min_max_avg {
 my $matrix = gen (@ARGV);
 #print $matrix . "\n" ;
 
-my $result = min_max_avg ($matrix);
-#print "$result\n";
-
 sub print_matrix {
     my $matrix = shift;
     my $result = shift;
+    my $X = @$matrix;               # Высота матрицы
+    my $Y = @{@$matrix[0]};         # Ширина матрицы
+    my $min = (split (" ", $result))[0];
+    my $max = (split (" ", $result))[1];
+    my $avg = (split (" ", $result))[2];
+    my $cell_width = (length sprintf ("%d",$max)) + 3;
     
-    for my $i (0..3) {	
-        for my $j (0..3) {
-            print $matrix -> [$i][$j] . " ";            
+    for my $i (0..$X-1) {	
+        for my $j (0..$Y-1) {
+            printf("%${cell_width}.2f", $matrix -> [$i][$j]);
+            print " ";            
         }
         print "\n";
     }
     
-    print "$result\n"; 
+    print "\n";
+    printf("%${cell_width}.2f ", $min);
+    printf("%${cell_width}.2f ", $max);
+    printf("%${cell_width}.2f", $avg);
+    print "\n";
+    #print $cell_width;
 }
 
+my $result = min_max_avg ($matrix);
+#print "$result\n";
+
 print_matrix($matrix, $result);
+
