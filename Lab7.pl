@@ -9,6 +9,8 @@ use strict;
 # 
 # The program accepts X, Y and P as optional parameters.
 
+die  "\nUsage: ./Program X Y P\n\n" unless (@ARGV == 3);
+
 sub gen {
     my ($X, $Y, $P) = @_;
     my $matrix;
@@ -30,13 +32,8 @@ sub min_max_avg {
     my $min = $matrix -> [0][0]; 
     my $sum;
     my $count;
-    #my $avg;    
-    for my $i (0..3) {	
-        for my $j (0..3) {
-            print $matrix -> [$i][$j] . " ";            
-        }
-        print "\n";
-    } 
+    my $avg;
+    my $result; 
     
     for my $i (0..3) {	
         for my $j (0..3) {
@@ -56,17 +53,37 @@ sub min_max_avg {
             ++ $count;             
         }
     }
-      
-    print "$max\n"; 
-    print "$min\n";  
-    print "$sum\n"; 
-    print "$count\n"; 
-    print $sum / $count . "\n";  
+    
+    #print "$min\n";    
+    #print "$max\n";    
+    #print "$sum\n"; 
+    #print "$count\n"; 
+    $avg = $sum / $count;
+    #print $avg . "\n";
+    
+    $result = $min . ", " . $max . ", " . $avg;
+    return $result;      
+    #print "$result\n";      
 }
 
-my $matrix = gen (3, 3, 100);
+my $matrix = gen (@ARGV);
 #print $matrix . "\n" ;
 
-min_max_avg ($matrix);
+my $result = min_max_avg ($matrix);
+#print "$result\n";
 
+sub print_matrix {
+    my $matrix = shift;
+    my $result = shift;
+    
+    for my $i (0..3) {	
+        for my $j (0..3) {
+            print $matrix -> [$i][$j] . " ";            
+        }
+        print "\n";
+    }
+    
+    print "$result\n"; 
+}
 
+print_matrix($matrix, $result);
