@@ -77,14 +77,25 @@ sub print_matrix {
     my $max = (split (" ", $result))[1];
     my $avg = (split (" ", $result))[2];
     my $cell_width = (length sprintf ("%d",$max)) + 3;
+    no warnings;
+    
+    
     
     for my $i (0..$X-1) {	
-        for my $j (0..$Y-1) {
-            printf("%${cell_width}.2f", $matrix -> [$i][$j]);
-            print " ";            
-        }
+        print "\x{2500}" x((($cell_width) * ($Y+1))) ;
         print "\n";
+        for my $j (0..$Y-1) {
+            print "\x{2502}";
+            printf("%${cell_width}.2f", $matrix -> [$i][$j]);
+        }
+        
+        print "\x{2502}"; 
+        print "\n";
+                  
     }
+    
+    print "\x{2500}" x((($cell_width) * ($Y+1))) ;
+    print "\n";
     
     print "\n";
     printf("%${cell_width}.2f ", $min);
@@ -92,6 +103,8 @@ sub print_matrix {
     printf("%${cell_width}.2f", $avg);
     print "\n";
     #print $cell_width;
+    
+    use warnings;
 }
 
 my $result = min_max_avg ($matrix);
