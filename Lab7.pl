@@ -8,14 +8,34 @@ use strict;
 # c) print_matrix, which prints the matrix and results of min_max_avg to STDOUT.
 # 
 # The program accepts X, Y and P as optional parameters.
+my ($X, $Y, $P);
 
-die  "\nUsage: ./Program X Y P\n\n" unless (@ARGV == 3);
+# Если не введены аргументы
+if  (@ARGV != 3 ) {
+    ($X, $Y, $P) = (3, 3, 10);
+    print "You didn't enter all three arguments X, Y and P, so this is default matrix: \n";
+} else {
+    ($X, $Y, $P) = (@ARGV);
+    no warnings;
+    $X = $X + 0;
+    $Y = $Y + 0;
+    $P = $P + 0; 
+    use warnings;
+    # Если числа, присваивам переменным.
+    if ($X eq $ARGV[0] and  $Y eq $ARGV[1] and  $P eq $ARGV[2]) {
+        ($X, $Y, $P) = (@ARGV);
+        
+    # Если нет - выводим сообщение о том, что не все переданные параметры - числа.    
+    } else {
+        die  "Все три параметра X, Y, P должны быть числами!\n";
+    }
+    
+}
 
 sub gen {
     my ($X, $Y, $P) = @_;
     my $matrix;
-    #my @numbers;
-
+   
     for my $i (0..$X-1) {	
         for my $j (0..$Y-1) {
             $matrix -> [$i][$j]= rand($P) ;
@@ -38,18 +58,21 @@ sub min_max_avg {
     my $avg;
     my $result; 
     
+    # Вычисляем max
     for my $i (0..$X-1) {	
         for my $j (0..$Y-1) {
             $max = $matrix -> [$i][$j] if ($matrix -> [$i][$j] > $max);            
         }
     } 
     
+    # Вычисляем min
     for my $i (0..$X-1) {	
         for my $j (0..$Y-1) {
             $min = $matrix -> [$i][$j] if ($matrix -> [$i][$j] < $min);            
         }
     } 
     
+    # Промежуточные вычисления для среднего.
     for my $i (0..$X-1) {	
         for my $j (0..$Y-1) {
             $sum += $matrix -> [$i][$j];
@@ -57,16 +80,19 @@ sub min_max_avg {
         }
     }
     
-    $avg = $sum / $count;
-    #print $avg . "\n";
+    # Вычисляем avg
+    if ($count == 0) {
+        die "The program finished its work, since you tried to divide by zero!";
+    }
     
+    $avg = $sum / $count ;
+        
     $result = $min ." ". $max ." ". $avg;
     return $result;      
-    #print "$result\n";      
+         
 }
 
-my $matrix = gen (@ARGV);
-#print $matrix . "\n" ;
+my $matrix = gen ($X, $Y, $P);
 
 sub print_matrix {
     my $matrix = shift;
@@ -83,8 +109,12 @@ sub print_matrix {
     print ("\x{2554}" . ("\x{2550}" x $cell_width . "\x{2564}") x ($Y-1) . "\x{2550}" x $cell_width . "\x{2557}"  )  ;
     print "\n"; 
     
-    for my $i (0..$X-1) {        
+    # Во внешнем цикле проходим по строкам таблицы
+    for my $i (0..$X-1) { 
+        
+       # Во внутреннем цикле проходим по столбцам таблицы       
        for my $j (0..$Y-1) {
+       
             # Если первый столбец, делаем внешнюю двойную линию 
             if ($j == 0) {
                 print "\x{2551}"; # двойная вертикальная линия
@@ -95,7 +125,7 @@ sub print_matrix {
                 print "\x{2502}"; # тонкая вертикальная линия
                 printf("%${cell_width}.2f", $matrix -> [$i][$j]); 
                 
-            # Последний столбец                 
+            # Последний столбец - печатаем в конце двойную вертикальную линию               
             } else {
                 print "\x{2502}"; # тонкая вертикальная линия
                 printf("%${cell_width}.2f", $matrix -> [$i][$j]);
@@ -116,10 +146,10 @@ sub print_matrix {
     print "\n";
     
     # Статистика
-    print "\n";
-    printf("%${cell_width}.2f ", $min);
-    printf("%${cell_width}.2f ", $max);
-    printf("%${cell_width}.2f", $avg);
+    print "\nStatistics:\n";
+    printf("Min: %${cell_width}.2f \n", $min);
+    printf("Max: %${cell_width}.2f \n", $max);
+    printf("Average: %${cell_width}.2f \n", $avg);
     print "\n";
     #print $cell_width;
     
