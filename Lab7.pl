@@ -79,24 +79,43 @@ sub print_matrix {
     my $cell_width = (length sprintf ("%d",$max)) + 3;
     no warnings;
     
+    # Двойная черта над таблицей
+    print ("\x{2554}" . ("\x{2550}" x $cell_width . "\x{2564}") x ($Y-1) . "\x{2550}" x $cell_width . "\x{2557}"  )  ;
+    print "\n"; 
     
-    
-    for my $i (0..$X-1) {	
-        print "\x{2500}" x((($cell_width) * ($Y+1))) ;
-        print "\n";
-        for my $j (0..$Y-1) {
-            print "\x{2502}";
-            printf("%${cell_width}.2f", $matrix -> [$i][$j]);
+    for my $i (0..$X-1) {        
+       for my $j (0..$Y-1) {
+            # Если первый столбец, делаем внешнюю двойную линию 
+            if ($j == 0) {
+                print "\x{2551}"; # двойная вертикальная линия
+                printf("%${cell_width}.2f", $matrix -> [$i][$j]);
+                
+            # Если не последний столбец
+            } elsif ($j !=$Y-1) {
+                print "\x{2502}"; # тонкая вертикальная линия
+                printf("%${cell_width}.2f", $matrix -> [$i][$j]); 
+                
+            # Последний столбец                 
+            } else {
+                print "\x{2502}"; # тонкая вертикальная линия
+                printf("%${cell_width}.2f", $matrix -> [$i][$j]);
+                print "\x{2551}";  # двойная вертикальная линия               
+            }
         }
-        
-        print "\x{2502}"; 
         print "\n";
-                  
-    }
-    
-    print "\x{2500}" x((($cell_width) * ($Y+1))) ;
+        
+        # Если не последняя строка, добавляем тонкую линию между строками.
+        if ($i != $X-1) {
+            print ("\x{255F}" . ("\x{2500}" x $cell_width . "\x{253C}") x ($Y-1) . "\x{2500}" x $cell_width . "\x{2562}"  );
+            print "\n";
+        }
+    }          
+        
+    # Двойная черта под таблицей
+    print ("\x{255A}" . ("\x{2550}" x $cell_width . "\x{2567}") x ($Y-1) . "\x{2550}" x $cell_width . "\x{255D}"  );
     print "\n";
     
+    # Статистика
     print "\n";
     printf("%${cell_width}.2f ", $min);
     printf("%${cell_width}.2f ", $max);
@@ -106,6 +125,7 @@ sub print_matrix {
     
     use warnings;
 }
+
 
 my $result = min_max_avg ($matrix);
 #print "$result\n";
