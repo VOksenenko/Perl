@@ -13,7 +13,9 @@ my ($X, $Y, $P);
 # Если не введены аргументы
 if  (@ARGV != 3 ) {
     ($X, $Y, $P) = (3, 3, 10);
-    print "You didn't enter all three arguments X, Y and P, so this is default matrix: \n";
+    print "You didn't enter all three arguments X, Y and P, \nso this is default matrix: \n";
+
+# Если введено три аргумента, проверяем числа ли они.   
 } else {
     ($X, $Y, $P) = (@ARGV);
     no warnings;
@@ -27,7 +29,7 @@ if  (@ARGV != 3 ) {
         
     # Если нет - выводим сообщение о том, что не все переданные параметры - числа.    
     } else {
-        die  "Все три параметра X, Y, P должны быть числами!\n";
+        die  "All three arguments X, Y and P should be numbers!\n";
     }
     
 }
