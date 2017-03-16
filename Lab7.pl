@@ -8,6 +8,7 @@ use strict;
 # c) print_matrix, which prints the matrix and results of min_max_avg to STDOUT.
 # 
 # The program accepts X, Y and P as optional parameters.
+
 my ($X, $Y, $P);
 
 # Если не введены аргументы
@@ -36,6 +37,7 @@ if  (@ARGV != 3 ) {
 
 sub gen {
     my ($X, $Y, $P) = @_;
+    die "X and Y should be greater then 0!\n" if  ($X == 0 or $Y == 0);
     my $matrix;
    
     for my $i (0..$X-1) {	
@@ -119,8 +121,17 @@ sub print_matrix {
        
             # Если первый столбец, делаем внешнюю двойную линию 
             if ($j == 0) {
-                print "\x{2551}"; # двойная вертикальная линия
-                printf("%${cell_width}.2f", $matrix -> [$i][$j]);
+                # Если матрица состоит всего из одного столбца открываем и закрываем его двойной линией.
+                if($Y == 1 ) {
+                    print "\x{2551}"; # двойная вертикальная линия
+                    printf("%${cell_width}.2f", $matrix -> [$i][$j]);
+                    print "\x{2551}";  # двойная вертикальная линия
+                    
+                    
+                } else {
+                    print "\x{2551}"; # двойная вертикальная линия
+                    printf("%${cell_width}.2f", $matrix -> [$i][$j]);
+                }                
                 
             # Если не последний столбец
             } elsif ($j !=$Y-1) {
