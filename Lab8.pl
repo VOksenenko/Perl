@@ -78,6 +78,7 @@ if ($date =~ $pattern1) {
         }
     } 
 print "Month is incorrect!\n"  if ($flag == 0);  
+
 } elsif ($date =~ $pattern2) {
     #print "$& - OK!\n";
     my ($month, $day, $year) = ($1,$2,$3);

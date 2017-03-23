@@ -23,7 +23,7 @@ sub read_hosts {
     while (my $line = <$fh>) {
         chomp $line;
         # Если в файле есть пустые строки, пропускаем их.
-        next if ($line eq "");
+        next unless $line;
         push @hosts, $line;
     }
     return @hosts;
