@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 use strict;
 
 # Create a program which finds all words with doubled letters (e.g. "progress", "address", "tool" and so on) inside a body part of an html-document. The program should search for them outside html-tags, e.g. among words that are "visible" on a screen.
@@ -7,11 +7,13 @@ use strict;
 my $path = shift @ARGV;
 open (my $file, "<", $path ) or die "Can't open file!";
 
-while (my $line = <$file>) {
-    chomp $line;
-    next unless ($line =~ m|<body>(\w+)</body>| );
-    print "$1\n";    
+
+while (<$file>) {
+    if ( /<body>/.. /<\/body>/ ) {
+        if ( m{<(\w+)>(.*?)</\1>}gi) {
+            my $line = $2;
+            print "$&\n" while ($line =~ m{(\w+)?(\w)\2(\w+)?}gi);
+        }
+    }
 }
 
-# http://haacked.com/archive/2004/10/25/usingregularexpressionstomatchhtml.aspx/
-# </?\w+\s+[\^>]*>
